@@ -35,11 +35,9 @@ public class UserOracle implements UserDao {
 			ResultSet rs = ps.executeQuery();
 			
 			if(rs.next() == false) {
-				//System.out.println("result set returning false");
 				return null;
 			}
 			else {
-				//System.out.println("attempting to get password");
 				int user_password = rs.findColumn("username_password");
 				return new User(username, rs.getString(user_password));
 			}
@@ -136,7 +134,7 @@ public class UserOracle implements UserDao {
 			}
 			System.out.println("Here is a list of all active users: ");
 			System.out.println("---------------------------------------------------------------------");
-			System.out.println("UserID:\tFull Name:\tUsername:\tPassword:\tUser Type:");
+			System.out.println("UserID\tFull Name\tUsername\tPassword\tUser Type:");
 			for (User uL : listOfUsers) {
 				System.out.println(uL.toString());	
 			}
@@ -149,31 +147,26 @@ public class UserOracle implements UserDao {
 	}
 	
 	//update users
-	public boolean updateUsers(int user_id, String username) throws SQLException {
+	public boolean updateUsers(String user_type, int user_id){
 		Connection con = ConnectionUtil.getConnection();
 		
 		if (con == null) {
 			return false;
 		}
 		else {
-			String sql = "select * from users where user_id = ?";
-			PreparedStatement ps = con.prepareStatement(sql);
-			ResultSet rs = ps.executeQuery();
-			ps.setInt(1, user_id);
-			
-			if(rs.next() == false) {
-				return false;
-			}
-			else {
-				String sql1 = "update users set username = ? where user_id = ?";
+			try {
+				String sql1 = "update users set user_type = ? where user_id = ?";
 				PreparedStatement ps1 = con.prepareStatement(sql1);
-				ps1.executeQuery();
-				ps1.setString(1, username);
+				ps1.setString(1, user_type);
 				ps1.setInt(2, user_id);
-			}
-			return true;
-		}
+				ps1.executeQuery();
+				return true;
+		}catch (SQLException e) {
+			System.out.println("sql Execption");
 	}
+	return false;
+	}
+}
 	
 	//delete users
 	public boolean deleteUser(int user_id) {
@@ -184,6 +177,12 @@ public class UserOracle implements UserDao {
 		}
 		
 		try {
+			String sql1 = "delete from accounts where user_id = ?";
+			PreparedStatement ps1 = con.prepareStatement(sql1);
+			ps1.setInt(1, user_id);
+			ps1.executeQuery();
+			
+			
 			String sql = "delete from users where user_id = ?";
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setInt(1, user_id);

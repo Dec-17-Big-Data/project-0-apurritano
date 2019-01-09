@@ -48,15 +48,15 @@ alter table accounts add constraint user_id_foreign_key
     foreign key (user_id) references users (user_id);
     
 create sequence user_id_sequence
-    minvalue 1
-    start with 1
-    increment by 1
+    minvalue 100
+    start with 100
+    increment by 2
     cache 25;
 
 create sequence account_id_sequence
-    minvalue 1
-    start with 1 
-    increment by 1
+    minvalue 200
+    start with 200  
+    increment by 2
     cache 25;
 
 INSERT INTO users(
@@ -95,7 +95,7 @@ INSERT INTO accounts (
 )
 values (
     213,
-    'Savings',
+    'Savings ',
     1500,
     123
 );
@@ -111,7 +111,7 @@ values (
     456, 
     'Jack Daniels', 
     'jdaniels', 
-    'whiskey', 
+    'whiskey8', 
     'normal'
 );
 
@@ -136,7 +136,7 @@ INSERT INTO accounts (
 )
 values (
     546,
-    'Savings',
+    'Savings ',
     250,
     456
 );
@@ -151,8 +151,8 @@ INSERT INTO users(
 values (
     789, 
     'Captain Morgan', 
-    'cmorgan', 
-    'rum', 
+    'capmorgan', 
+    'rum45678', 
     'normal'
 );
 
@@ -177,11 +177,27 @@ INSERT INTO accounts (
 )
 values (
     879,
-    'Savings',
+    'Savings ',
     250,
     789
 );
-    
+
+INSERT INTO users(
+    user_id,
+    full_name,
+    username,
+    username_password,
+    user_type
+)
+Values(
+    987,
+    'Jose Cuervo',
+    'josecuervo',
+    'tequila8',
+    'normal'
+);
+
+
 create or replace PROCEDURE DELETE_ACCOUNT 
     (account_id_in IN NUMBER) 
     AS a_balance NUMBER(20);
@@ -218,12 +234,10 @@ BEGIN
 END WITHDRAW_ACCOUNT;
 /
 
-CREATE OR REPLACE PROCEDURE DEPOSIT_ACCOUNT 
+create or replace PROCEDURE DEPOSIT_ACCOUNT 
 (
     account_id_in IN NUMBER,
-    deposit_amount_in IN NUMBER,
-    account_balance_out OUT NUMBER,
-    success_out OUT NUMBER
+    deposit_amount_in IN NUMBER
 ) AS 
     d_balance NUMBER(20); 
 BEGIN
@@ -235,11 +249,8 @@ BEGIN
         update accounts 
         set account_balance = d_balance + deposit_amount_in
         where account_id = account_id_in;
-        success_out := 1;
-        account_balance_out := d_balance + deposit_amount_in;
+
         commit;
-    else 
-        success_out := 0;
     end if;
 END DEPOSIT_ACCOUNT;
 /

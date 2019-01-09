@@ -20,7 +20,7 @@ public interface UserDao {
 	public List<User> getAllUsers();
 	
 	//update users information
-	public boolean updateUsers(int user_id, String username)throws SQLException;
+	public boolean updateUsers(String user_type, int user_id)throws SQLException;
 	
 	//delete users
 	public boolean deleteUser(int user_id);

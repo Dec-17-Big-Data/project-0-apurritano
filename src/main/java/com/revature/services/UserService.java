@@ -40,7 +40,7 @@ public class UserService {
 	}
 		
 	public boolean updateUsers() throws SQLException{
-		return userDao.updateUsers(Integer, String);
+		return userDao.updateUsers(String, Integer);
 	}
 		
 	public boolean deleteUser(){

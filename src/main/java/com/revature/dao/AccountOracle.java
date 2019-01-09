@@ -43,7 +43,7 @@ public class AccountOracle implements AccountDao {
 			}
 			else {
 				int u_id = rs.getInt(1);
-				String sql1 = "select * from accounts where user_id = ?";
+				String sql1 = "select * from accounts where user_id = ? order by account_id";
 				con.close();
 				con = ConnectionUtil.getConnection();
 				
@@ -173,7 +173,7 @@ public class AccountOracle implements AccountDao {
 		return false;
 	}
 	
-	//withdraw from account if enough funds
+	//withdraw from account
 	public boolean withdrawFromAccount(int drawAccount, double withAmountD) {
 		Connection con = ConnectionUtil.getConnection();
 		

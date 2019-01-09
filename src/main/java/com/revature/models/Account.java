@@ -64,7 +64,7 @@ public class Account implements Serializable {
 
 	@Override
 	public String toString() {
-		return accountId +"\t\t"+ accountType +"\t\t"+ accountBalance +"\t\t"+ userId;
+		return accountId +"\t"+"\t"+ accountType +"\t"+ accountBalance +"\t"+"\t"+"\t"+ userId;
 	}
 
 	@Override

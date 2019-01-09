@@ -1,5 +1,7 @@
 package com.revature.util;
 
+
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -106,10 +108,11 @@ public class BankApplication {
 									//View accounts
 									if (action2.equals("1")) {
 										System.out.println("You chose to view your accounts.");
+										System.out.println("");
 										List<Account> aL = bankAction.getAccounts(username);
 										if (aL == null) {
-											System.out.println("You do not have any open accounts");
-											System.out.println("Please select another option");
+											System.out.println("You do not have any open accounts.");
+											System.out.println("Please select another option.");
 											System.out.println("");
 											
 										} else {
@@ -133,7 +136,7 @@ public class BankApplication {
 												AccountDao makeAccount = new AccountOracle();
 												makeAccount.createNewAccount(username, newAccountType);
 												stop = true;
-											} else if (newAccountType.equals("Savings")) {
+											} else if (newAccountType.equals("Savings ")) {
 												AccountDao makeAccount = new AccountOracle();
 												makeAccount.createNewAccount(username, newAccountType);
 												stop = true;
@@ -173,6 +176,7 @@ public class BankApplication {
 														System.out.println("Is there something else you would like to do?");
 														System.out.println("Or enter 7 to exit.");
 														System.out.println("");
+														cancel = true;
 													} else {
 														System.out.println("We were unable to delete your account");
 														System.out.println("Please try again.");
@@ -208,20 +212,32 @@ public class BankApplication {
 											boolean checkAccount = findAccount.checkForAccount(drawAccount);
 											if (checkAccount) {
 												System.out.println("Account found.");
+												boolean drawwith = false;
+												while(!drawwith) {
 												System.out.println("How much would you like to withdraw?");
 												String withAmount = input.nextLine();
 												double withAmountD = Double.parseDouble(withAmount);
-												AccountDao withdraw = new AccountOracle();
-												boolean withdrawed = withdraw.withdrawFromAccount(drawAccount, withAmountD);
-												if (withdrawed) {
-													System.out.println("The given amount was withdrawed from your account.");
+												if (withAmountD < 0) {
+													System.out.println("Please enter a positive number.");
+													
+												} else if (withAmountD > 0) {	
+													AccountDao withdraw = new AccountOracle();
+													boolean withdrawed = withdraw.withdrawFromAccount(drawAccount, withAmountD);
+														if (withdrawed) {
+														System.out.println("The given amount was withdrawed from your account.");
+														drawwith = true;
+													} else {
+														System.out.println("We were unable to withdraw the given amount from your account.");
+														System.out.println("Please try again.");
+														System.out.println("");
+													}
 												} else {
-													System.out.println("We were unable to withdraw the given amount from your account.");
-													System.out.println("Please try again.");
-													System.out.println("");
+													System.out.println("Invalid Input.");
+													System.out.println("Please enter a valid positive number.");
 												}
 											}
 										}
+										}	
 										} catch (NumberFormatException e){
 											System.out.println("Invalid input.");
 											System.out.println("Please try again.");
@@ -250,18 +266,29 @@ public class BankApplication {
 										boolean checkAccount = findAccount.checkForAccount(sitAccount);
 										if (checkAccount) {
 											System.out.println("Account found.");
+											boolean posAmount = false;
+											while (!posAmount) {
 											System.out.println("How much would you like to deposit?");
 											String depositAmount = input.nextLine();
 											double depositAmountD = Double.parseDouble(depositAmount);
+											if (depositAmountD < 0) {
+												System.out.println("Please enter a positive number");
+											}else if(depositAmountD > 0){
 											AccountDao deposit = new AccountOracle();
+											
 											boolean deposited = deposit.depositToAccount(sitAccount, depositAmountD);
-											if (deposited) {
-												System.out.println("The given amount was deposited into your account.");
+												if (deposited) {
+													System.out.println("The given amount was deposited into your account.");
+													posAmount = true;
+												} else {
+													System.out.println("We were unable to deposit the given amount into your account.");
+													}
 											} else {
-												System.out.println("We were unable to deposit the given amount into your account.");
-												}
-											}	
+												System.out.println("Invalid input, please enter a positive number.");
+											}
 										}
+									}
+								}
 										}catch (NumberFormatException e){
 											System.out.println("Invalid input.");
 											System.out.println("Please try again.");
@@ -313,8 +340,44 @@ public class BankApplication {
 											//update users
 											}else if (superAction.equals("2")) {
 												System.out.println("You chose to update users.");
-												//implement updates
-												
+												System.out.println("");
+												boolean updated = false;
+												while(!updated) {
+													System.out.println("Please enter the userID of the user you would like to update.");
+													String updateIDstr = input.nextLine();
+													int updateID = Integer.parseInt(updateIDstr);
+														
+													System.out.println("Please enter the user type you would like to make this user.");
+													System.out.println("Please type either normal or super.");
+													String user_type = input.nextLine();
+													if (user_type.equals("normal")) {
+														System.out.println("Okay we will make this user a normal user.");
+														UserDao userUpdate = new UserOracle();
+														try {
+															boolean updateUsers = userUpdate.updateUsers(user_type, updateID);
+															if (updateUsers) {
+																System.out.println("We were able to update user");
+																updated = true;
+															}
+														
+														} catch (SQLException e) {
+															System.out.println("SQL Exception");
+														}
+													} else if(user_type.equals("super")) {
+														System.out.println("Okay we will make this user a superuser.");
+														UserDao userUpdate = new UserOracle();
+														try {
+															boolean updateUsers = userUpdate.updateUsers(user_type, updateID);
+															if (updateUsers) {
+																System.out.println("We were able to update user");
+																updated = true;
+															}
+														
+														} catch (SQLException e) {
+															System.out.println("SQL Exception");
+														}
+													}
+											}	
 												
 											//delete users	
 											}else if (superAction.equals("3")) {

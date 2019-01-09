@@ -41,7 +41,9 @@ import java.io.IOException;
 				String password = props.getProperty("jdbc.password");
 				
 				con = DriverManager.getConnection(endpoint, username, password);
+				//connectionInstance = con;
 				return con;
+				
 			} catch (Exception e) {
 				
 			} finally {
